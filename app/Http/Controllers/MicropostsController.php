@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Micropost;
 
-use App\User; 
-
-class UsersController extends Controller
+class MicropostsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +14,20 @@ class UsersController extends Controller
      */
     public function index()
     {
-       $users = User::orderBy('id', 'desc')->paginate(10);
-
-       return view('users.index', [
-            'users' => $users,
-       ]);
+       $data = [];
+       
+       if (\Auth::check()) {
+           $user = \Auth::user();
+           
+           $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
+           
+           $data = [
+               'user'=> $user,
+               'microposts'=> $microposts,
+            ];
+            
+       }
+        return view('welcome', $data);
     }
 
     /**
@@ -40,7 +48,17 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'content' => 'required|max:255',
+        ]);
+
+        
+        $request->user()->microposts()->create([
+            'content' => $request->content,
+        ]);
+
+        
+        return back();
     }
 
     /**
@@ -51,19 +69,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = User::findOrFail($id);
-
-        
-        $user->loadRelationshipCounts();
-
-        
-        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
-
-        
-        return view('users.show', [
-            'user' => $user,
-            'microposts' => $microposts,
-        ]);
+        //
     }
 
     /**
@@ -97,6 +103,15 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $micropost = Micropost::findOrFail($id);
+
+        
+        if (\Auth::id() === $micropost->user_id) {
+            $micropost->delete();
+        }
+
+        
+        return back();
     }
+
 }

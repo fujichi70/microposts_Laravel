@@ -3,33 +3,30 @@
         {{-- トップページへのリンク --}}
         <a class="navbar-brand" href="/">Microposts</a>
 
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#nav-bar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <!--<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#nav-bar">-->
+        <!--    <span class="navbar-toggler-icon"></span>-->
+        <!--</button>-->
 
+        @if (Auth::check())
         <div class="collapse navbar-collapse" id="nav-bar">
             <ul class="navbar-nav">
-                @if (Auth::check())
                     {{-- ユーザ一覧ページへのリンク --}}
                     <li class="nav-item">{!! link_to_route('users.index', 'Users', [], ['class' => 'nav-link']) !!}</li>
-                        <li class="nav-item dropdown">
-                             <ul class="dropdown-menu dropdown-menu-right">
-                                {{-- ユーザ詳細ページへのリンク --}}
-                                <li class="dropdown-item">{!! link_to_route('users.show', 'My profile', ['user' => Auth::id()]) !!}</li>
-                                <li class="dropdown-divider"></li>
-                                {{-- ログアウトへのリンク --}}
-                                <li class="dropdown-item">{!! link_to_route('logout.get', 'Logout') !!}</li>
-                            </ul>
-                        </li>
-                @else
-                {{-- ユーザ登録ページへのリンク --}}
-                <li class="nav-item"><a href="#" class="nav-link">Signup</a></li>
-                {{-- ログインページへのリンク --}}
-                <li class="nav-item"><a href="#" class="nav-link">Login</a></li>
-                @endif
+                    {{-- ユーザ詳細ページへのリンク --}}
+                    <li class="nav-item">{!! link_to_route('users.show', 'My profile', ['user' => Auth::id()], ['class' => 'nav-link']) !!}</li>
+                    {{-- ログアウトへのリンク --}}
             </ul>
-           
-
         </div>
+        <div>{!! link_to_route('logout.get', 'Logout', [], ['class' => 'nav-link mr-auto']) !!}</div>
+        @else
+        <div class="collapse navbar-collapse" id="nav-bar">
+            <ul class="navbar-nav">
+                {{-- ユーザ登録ページへのリンク --}}
+                <li class="nav-item">{!! link_to_route('signup.get', 'Signup', [], ['class' => 'nav-link']) !!}</li>
+                {{-- ログインページへのリンク --}}
+                <li class="nav-item">{!! link_to_route('login', 'Login', [], ['class' => 'nav-link']) !!}</li>
+            </ul>
+        </div>
+        @endif
     </nav>
 </header>
