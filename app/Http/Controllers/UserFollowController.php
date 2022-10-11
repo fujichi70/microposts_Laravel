@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 
 class UserFollowController extends Controller
 {
-   class UserFollowController extends Controller
-{
-    
+  
     public function store($id)
     {
         
@@ -21,9 +19,8 @@ class UserFollowController extends Controller
     public function destroy($id)
     {
         
-        \Auth::user()->unfollow($id)->with('message', 'フォローを取り消しました');
+        \Auth::user()->unfollow($id);
         
-        return back();
+        return back()->with('message', 'フォローを取り消しました');
     }
-}
 }
